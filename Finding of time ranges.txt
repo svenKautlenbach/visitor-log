@@ -1,0 +1,24 @@
+***Solution documentation***
+
+**Data preparation**
+
+The time was chosen as a basis/root of all the operations. Tool is expected to have a single input file as an argument which specifies clock in a format of "HH:MM". This means one needs to operate on a 24H interval where the smallest unit is a minute.
+
+Since there are 1440 minutes in 24 hours a map called "visitCount" with 1440 items is created. The map is sequenced in chronological order as such that the key of the map item would be the minute mark (0-1339) and the value is the visitor count on that exact minute.
+Records in the input file are parsed into objects where each have two properties - enter and exit time. The unit of the properties is an unsigned integer in a range of 0-1339. Each record is collected into an array called "records" which has the size of the time records present in a file.
+Accompanying static function is created that has two inputs - a minute mark and the data record. This function called isPresent(...) simply returns a boolean that confirms if this data record represents a visiting time during that input minute mark.
+All the "visitCount" map keys are iterated over the "records" array where the isPresent(...) function is called once per record. Each "true" operation increments the key value while false leaves the data intact.
+
+**Solution to 1.b**
+Using prefilled "visitCount" map a function called std::max_element is used to find the most popular minute marks' visitor count which is called "maxVisitors".
+Maximum visitor count is then feed in turns to "std::find_first_of(...)" and "std::mismatch(...)" functions.
+This means that map is sequentially iterated over the items such that:
+1 - The variable "i" keeps the current minute mark, starts from 0 (00:00)
+2 - "i" is checked for the end of the map, if end is reached the iteration quits
+3 - The maximum visitor count minute mark is searched with "std::find_first_of(i, maxVisitors, ...)" starting at the position of "i"
+3.b - If found the "std::mismatch" is used to find the next less popular minute mark, "i" is updated, range is saved
+4 - jump to 2
+
+**Solution to 1.c**
+Is similar to solution of 1.b with the exception of "maxVisitors" variable is not used since all the ranges are targets. 
+
