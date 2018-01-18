@@ -3,6 +3,18 @@
 
 #include "utilities.h"
 
+namespace
+{
+	std::string fillTwoDigits(uint16_t d)
+	{
+		std::string t = "";
+		if (d < 10)
+			t += "0";
+
+		return t + std::to_string(d);
+	}
+}
+
 namespace utilities
 {
 	std::vector<std::string> split(const std::string& source, const std::string& delimiter)
@@ -38,6 +50,6 @@ namespace utilities
 	{
 		auto h = minutes / 60;
 
-		return std::to_string(h) + ":" + std::to_string(minutes - h * 60);
+		return fillTwoDigits(h) + ":" + fillTwoDigits(minutes - h * 60);
 	}
 }

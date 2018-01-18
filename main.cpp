@@ -42,10 +42,6 @@ int main(int argc, char* argv[])
 		const auto& records = record::parse(std::string(argv[1]));
 		const auto& histogram = statistics::createHistogram(records);
 		const auto maxAttendance = statistics::findMaxAttendance(histogram);
-		for (const auto& u : histogram)
-		{
-			std::cout << utilities::minutesTo24H(u.first) << " " << u.second << std::endl;
-		}
 		const auto& attendanceIntervals = statistics::aggregate(histogram);
 		print1b(attendanceIntervals, maxAttendance);
 		print1c(attendanceIntervals);
