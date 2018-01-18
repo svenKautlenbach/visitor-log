@@ -34,5 +34,10 @@ namespace utilities
 		return ls;
 	}
 
+	std::string minutesTo24H(uint16_t minutes)
+	{
+		auto h = minutes / 60;
 
+		return std::to_string(h) + ":" + std::to_string(minutes - h * 60);
+	}
 }

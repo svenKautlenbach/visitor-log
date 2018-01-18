@@ -1,13 +1,31 @@
 #include <iostream>
 
-#include "count.h"
 #include "record.h"
+#include "statistics.h"
+#include "utilities.h"
 
 namespace
 {
 	void printUsage(const std::string& me)
 	{
 		std::cout << "Usage: " << me << " <record file>" << std::endl;
+	}
+
+	void print1b(const statistics::attendance& intervals, uint32_t visitors)
+	{
+		std::cout << "Periods where the maximum attendance of " << visitors << " occurred." << std::endl;
+		for (const auto& i : intervals)
+			if (i.first == visitors)
+				std::cout << utilities::minutesTo24H(i.second.entry) << "-"
+						  << utilities::minutesTo24H(i.second.exit) << std::endl;
+	}
+
+	void print1c(const statistics::attendance& intervals)
+	{
+		std::cout << "Periods where attendance remained static." << std::endl;
+		for (const auto& i : intervals)
+			std::cout << utilities::minutesTo24H(i.second.entry) << "-" << utilities::minutesTo24H(i.second.exit)
+					  << ";" << i.first << std::endl;
 	}
 }
 
@@ -22,25 +40,15 @@ int main(int argc, char* argv[])
 	try
 	{
 		const auto& records = record::parse(std::string(argv[1]));
-		/*for (const auto& r : records)
-			std::cout << "Entry - " << r.entry << " Exit - " << r.exit << std::endl;
-		*/
-		const auto& visitCount = count::createHistogram(records);
-
-		for (const auto& v : visitCount)
+		const auto& histogram = statistics::createHistogram(records);
+		const auto maxAttendance = statistics::findMaxAttendance(histogram);
+		for (const auto& u : histogram)
 		{
-			std::cout << v.first << " " << v.second << std::endl;
+			std::cout << utilities::minutesTo24H(u.first) << " " << u.second << std::endl;
 		}
-
-		std::cout << count::findMaxAttendance(visitCount) << std::endl;
-
-		uint32_t huhuu = visitCount.begin()->second;
-		auto jejee = std::find_if_not(visitCount.cbegin(), visitCount.cend(), [&](const std::pair<record::minute_mark , uint32_t >& a){return a.second == huhuu;});
-		std::cout << jejee->first << " " << jejee->second << std::endl;
-		huhuu = jejee->second;
-		auto jejeee = std::find_if_not(jejee, visitCount.cend(), [&](const std::pair<record::minute_mark , uint32_t >& a){return a.second == huhuu;});
-		std::cout << jejeee->first << " " << jejeee->second << std::endl;
-
+		const auto& attendanceIntervals = statistics::aggregate(histogram);
+		print1b(attendanceIntervals, maxAttendance);
+		print1c(attendanceIntervals);
 	}
 	catch (const std::runtime_error& e)
 	{
