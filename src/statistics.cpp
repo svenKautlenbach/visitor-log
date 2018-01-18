@@ -1,7 +1,5 @@
 #include "statistics.h"
 
-#include <iostream>
-
 namespace statistics
 {
 	histogram createHistogram(const std::vector<record::Interval>& intervals)
@@ -41,9 +39,11 @@ namespace statistics
 		auto visitors = dataIter->second;
 		while (dataIter != end)
 		{
-			auto m = std::find_if_not(std::next(dataIter), end, [&](const std::pair<record::minute_mark, uint32_t>& d) { return d.second == visitors; });
+			auto m = std::find_if(dataIter, end, [&](const std::pair<record::minute_mark, uint32_t>& d) { return d.second != visitors; });
 			a.emplace_back(visitors, record::Interval{dataIter->first, std::prev(m)->first});
-			visitors = dataIter->second;
+			if (m == end)
+				break;
+			visitors = m->second;
 			dataIter = m;
 		}
 

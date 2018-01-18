@@ -13,7 +13,7 @@ Each "record::Interval" is collected into an array called "records" which has th
 Since there are 1440 minutes in 24 hours a map called "histogram" with 1440 items is created. The map is sequenced in chronological order as such that the key of the map item would be the minute mark (0-1339) and the value is the visitor count on that exact minute.
 *attendanceIntervals*
 A data set of unique intervals is created. Each item represents a time slot where visitor count remained steady, this is vector where each item has two properties - visitor count integer and a "record::Interval".
-It is constructed using prefilled "histogram" map which is fed into "statistics::aggregate(...)" procedure that internally uses std algorithm library procedure called "find_if_not(...)".
+It is constructed using prefilled "histogram" map which is fed into "statistics::aggregate(...)" procedure that internally uses std algorithm library procedure called "find_if(...)".
 
 **Solution to 1.b**
 Using prefilled "attendanceIntervals" vector a function called "std::max_element(...)" is used to find the most popular minute marks' visitor count which is called "maxAttendance".
